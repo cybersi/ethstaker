@@ -24,19 +24,19 @@ echo "Sleeping for 10 seconds..."
 sleep 10
 
 echo
-echo "Updating the Prysm Beacon to Version: $ver";
+echo "Updating Prysm Beacon to Version: $ver";
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-amd64
 mv beacon-chain-$ver-linux-amd64 beacon-chain
 chmod +x beacon-chain
 
 echo
-echo "Updating the Prysm Validator to Version: $ver";
+echo "Updating Prysm Validator to Version: $ver";
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-amd64
 mv validator-$ver-linux-amd64 validator
 chmod +x validator
 
 echo
-echo "Moving the Prysm Executables to /usr/local/bin."
+echo "Moving Prysm Executables to /usr/local/bin."
 sudo cp beacon-chain /usr/local/bin
 sudo cp validator /usr/local/bin
 
@@ -45,7 +45,7 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
 echo
-echo "Starting the Prysm services..."
+echo "Starting Prysm services..."
 sudo systemctl daemon-reload
 sudo systemctl start prysmbeacon
 sudo systemctl start prysmvalidator
