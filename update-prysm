@@ -1,0 +1,57 @@
+#!/bin/bash
+
+lastver=$(curl --silent "https://api.github.com/repos/prysmaticlabs/prysm/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+
+read  -p "Update Prysm to Version [$lastver]: " ver
+ver=${ver:-$lastver}
+
+read -p "Are you sure you want to update Prysm to Version [$ver]? (y/n)" -n 1 -r
+
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    exit 1
+fi
+
+echo
+echo "Stopping Prysm services..."
+sudo systemctl stop mevboost
+sudo systemctl stop prysmvalidator
+sudo systemctl stop prysmbeacon
+
+echo
+echo "Sleeping for 10 seconds..."
+sleep 10
+
+echo
+echo "Updating the Prysm Beacon to Version: $ver";
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-amd64
+mv beacon-chain-$ver-linux-amd64 beacon-chain
+chmod +x beacon-chain
+
+echo
+echo "Updating the Prysm Validator to Version: $ver";
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-amd64
+mv validator-$ver-linux-amd64 validator
+chmod +x validator
+
+echo
+echo "Moving the Prysm Executables to /usr/local/bin."
+sudo cp beacon-chain /usr/local/bin
+sudo cp validator /usr/local/bin
+
+read -p "Restart Prysm Services?" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+echo
+echo "Starting the Prysm services..."
+sudo systemctl daemon-reload
+sudo systemctl start prysmbeacon
+sudo systemctl start prysmvalidator
+sudo systemctl start mevboost
+fi
+
+echo "Cleaning up"
+sudo rm beacon-chain
+sudo rm validator
