@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo "Stopping Mevboost Service..."
+sudo systemctl stop mevboost
+echo
+echo "Downloading and building Mevboost..."
+CGO_CFLAGS="-O -D__BLST_PORTABLE__" go install github.com/flashbots/mev-boost@latest
+echo
+echo "Copying Mevboost binary to /usr/local/bin..."
+sudo cp ~/go/bin/mev-boost /usr/local/bin
+echo
+echo "Setting permissions..."
+sudo chown mevboost:mevboost /usr/local/bin/mev-boost
+echo
+
+read -p "Restart Mevboost Service?" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+   sudo systemctl start mevboost
+fi
