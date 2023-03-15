@@ -36,7 +36,7 @@ mv validator-$ver-linux-amd64 validator
 chmod +x validator
 
 echo
-echo "Moving Prysm Executables to /usr/local/bin."
+echo "Moving Prysm binaries to /usr/local/bin..."
 sudo cp beacon-chain /usr/local/bin
 sudo cp validator /usr/local/bin
 
