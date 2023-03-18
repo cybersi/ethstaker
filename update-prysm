@@ -1,5 +1,6 @@
 #!/bin/bash
 
+arch="amd64"
 lastver=$(curl --silent "https://api.github.com/repos/prysmaticlabs/prysm/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
 
 read -p "Update Prysm to Version [$lastver]: " ver
@@ -15,23 +16,23 @@ fi
 echo
 echo "Downloading Prysm: $ver"
 echo "-----------------------------"
-curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-amd64
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-$arch
 echo
-curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-amd64
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch
 
 echo
 echo "Checking File integrity..."
 echo "--------------------------"
-curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-amd64.sha256 --silent
-curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-amd64.sha256 --silent
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-$arch.sha256 --silent
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch.sha256 --silent
 
-if ! sha256sum --check "beacon-chain-$ver-linux-amd64.sha256"; then
+if ! sha256sum --check "beacon-chain-$ver-linux-$arch.sha256"; then
     echo
     echo "File Mismatch!"
     exit 1
 fi
 
-if ! sha256sum --check "validator-$ver-linux-amd64.sha256"; then
+if ! sha256sum --check "validator-$ver-linux-$arch.sha256"; then
     echo
     echo "File Mismatch!"
     exit 1
@@ -44,11 +45,13 @@ sudo systemctl stop mevboost
 sudo systemctl stop prysmvalidator
 sudo systemctl stop prysmbeacon
 
+sleep 5
+
 echo
 echo "Moving binaries to /usr/local/bin"
 echo "---------------------------------"
-mv beacon-chain-$ver-linux-amd64 beacon-chain
-mv validator-$ver-linux-amd64 validator
+mv beacon-chain-$ver-linux-$arch beacon-chain
+mv validator-$ver-linux-$arch validator
 sudo chmod +x beacon-chain
 sudo chmod +x validator
 sudo cp beacon-chain /usr/local/bin
@@ -70,5 +73,5 @@ echo "Cleaning up..."
 echo "--------------"
 rm beacon-chain
 rm validator
-rm beacon-chain-$ver-linux-amd64.sha256
-rm validator-$ver-linux-amd64.sha256
+rm beacon-chain-$ver-linux-$arch.sha256
+rm validator-$ver-linux-$arch.sha256
