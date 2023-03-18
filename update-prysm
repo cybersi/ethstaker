@@ -59,6 +59,7 @@ sudo cp validator /usr/local/bin
 
 read -p "Restart Prysm Services?" -n 1 -r
 echo
+
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
     echo "Starting Prysm services..."
