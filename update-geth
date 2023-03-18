@@ -15,10 +15,6 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 echo
-echo "Sleeping for 10 seconds..."
-sleep 10
-
-echo
 echo "Downloading Geth Version: $ver"
 echo "----------------------------------"
 curl -LO "https://gethstore.blob.core.windows.net/builds/geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz"
