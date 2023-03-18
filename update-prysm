@@ -2,56 +2,73 @@
 
 lastver=$(curl --silent "https://api.github.com/repos/prysmaticlabs/prysm/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
 
-read  -p "Update Prysm to Version [$lastver]: " ver
+read -p "Update Prysm to Version [$lastver]: " ver
 ver=${ver:-$lastver}
 
 read -p "Are you sure you want to update Prysm to Version [$ver]? (y/n)" -n 1 -r
 
 echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
 fi
 
 echo
 echo "Stopping Prysm services..."
+echo "--------------------------"
 sudo systemctl stop mevboost
 sudo systemctl stop prysmvalidator
 sudo systemctl stop prysmbeacon
 
 echo
-echo "Sleeping for 10 seconds..."
-sleep 10
-
-echo
-echo "Updating Prysm Beacon to Version: $ver";
+echo "Downloading Prysm: $ver"
+echo "-----------------------------"
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-amd64
-mv beacon-chain-$ver-linux-amd64 beacon-chain
-chmod +x beacon-chain
-
 echo
-echo "Updating Prysm Validator to Version: $ver";
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-amd64
-mv validator-$ver-linux-amd64 validator
-chmod +x validator
 
 echo
-echo "Moving Prysm binaries to /usr/local/bin..."
+echo "Checking File integrity..."
+echo "--------------------------"
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-amd64.sha256 --silent
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-amd64.sha256 --silent
+
+if ! sha256sum --check "beacon-chain-$ver-linux-amd64.sha256"; then
+    echo
+    echo "File Mismatch!"
+    exit 1
+fi
+
+if ! sha256sum --check "validator-$ver-linux-amd64.sha256"; then
+    echo
+    echo "File Mismatch!"
+    exit 1
+fi
+
+echo
+echo "Moving binaries to /usr/local/bin"
+echo "---------------------------------"
+mv beacon-chain-$ver-linux-amd64 beacon-chain
+mv validator-$ver-linux-amd64 validator
+sudo chmod +x beacon-chain
+sudo chmod +x validator
 sudo cp beacon-chain /usr/local/bin
 sudo cp validator /usr/local/bin
 
 read -p "Restart Prysm Services?" -n 1 -r
 echo
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-echo
-echo "Starting Prysm services..."
-sudo systemctl daemon-reload
-sudo systemctl start prysmbeacon
-sudo systemctl start prysmvalidator
-sudo systemctl start mevboost
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo
+    echo "Starting Prysm services..."
+    echo "--------------------------
+    sudo systemctl daemon-reload
+    sudo systemctl start prysmbeacon
+    sudo systemctl start prysmvalidator
+    sudo systemctl start mevboost
 fi
 
-echo "Cleaning up"
-sudo rm beacon-chain
-sudo rm validator
+echo "Cleaning up..."
+echo "--------------"
+rm beacon-chain
+rm validator
+rm beacon-chain-$ver-linux-amd64.sha256
+rm validator-$ver-linux-amd64.sha256
