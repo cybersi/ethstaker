@@ -15,7 +15,7 @@ fi
 
 echo
 echo "Downloading Prysm: $ver"
-echo "-----------------------------"
+echo "-------------------------"
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-$arch
 echo
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch
@@ -62,7 +62,7 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
     echo "Starting Prysm services..."
-    echo "--------------------------
+    echo "--------------------------"
     sudo systemctl daemon-reload
     sudo systemctl start prysmbeacon
     sudo systemctl start prysmvalidator
