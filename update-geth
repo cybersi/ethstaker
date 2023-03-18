@@ -1,7 +1,8 @@
 #!/bin/bash
+arch="amd64"
 lastver=$(curl --silent "https://api.github.com/repos/ethereum/go-ethereum/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
 
-read  -p "Update Geth to Version [$lastver]: " ver
+read -p "Update Geth to Version [$lastver]: " ver
 ver=${ver:-$lastver}
 
 sha=$(curl --silent "https://api.github.com/repos/ethereum/go-ethereum/git/ref/tags/${ver}" | grep -Po '"sha": "\K.*?(?=")')
@@ -9,49 +10,70 @@ sha=$(curl --silent "https://api.github.com/repos/ethereum/go-ethereum/git/ref/t
 read -p "Are you sure you want to update Geth to Version [$ver - ${sha:0:8}]? (y/n)" -n 1 -r
 
 echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
 fi
-
-echo
-echo "Stopping Prysm Services..."
-sudo systemctl stop mevboost
-sudo systemctl stop prysmvalidator
-sudo systemctl stop prysmbeacon
-
-echo
-echo "Stopping Geth Service..."
-sudo systemctl stop geth
 
 echo
 echo "Sleeping for 10 seconds..."
 sleep 10
 
 echo
-echo "Downloading Geth Version: $ver";
-curl -LO "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-${ver:1}-${sha:0:8}.tar.gz"
+echo "Downloading Geth Version: $ver"
+echo "----------------------------------"
+curl -LO "https://gethstore.blob.core.windows.net/builds/geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz"
 
 echo
-echo "Extracting...";
-tar xvf geth-linux-amd64-${ver:1}-${sha:0:8}.tar.gz
-sudo cp ./geth-linux-amd64-${ver:1}-${sha:0:8}/geth /usr/local/bin
+echo "Importing build server public keys..."
+echo "-------------------------------------"
+gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys F9585DE6 C2FF8BBF 9BA28146 7B9E2481 D2A67EAC
+
+echo
+echo "Checking File Signature..."
+echo "--------------------------"
+curl -LO "https://gethstore.blob.core.windows.net/builds/geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz.asc" --silent
+
+if ! gpg --verify geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz.asc; then
+    echo
+    echo "Signature Error!"
+    exit 1
+fi
+echo 
+echo "Signature OK!"
+
+echo
+echo "Stopping Prysm Services..."
+echo "--------------------------"
+sudo systemctl stop mevboost
+sudo systemctl stop prysmvalidator
+sudo systemctl stop prysmbeacon
+
+echo
+echo "Stopping Geth Service..."
+echo "------------------------"
+sudo systemctl stop geth
+
+echo
+echo "Extracting..."
+echo "-------------"
+tar xvf geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz
+sudo cp ./geth-linux-$arch-${ver:1}-${sha:0:8}/geth /usr/local/bin
 
 echo
 read -p "Restart Services?" -n 1 -r
 echo
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-echo
-echo "Starting Services..."
-sudo systemctl daemon-reload
-sudo systemctl start geth
-sudo systemctl start prysmbeacon
-sudo systemctl start prysmvalidator
-sudo systemctl start mevboost
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo
+    echo "Starting Services..."
+    sudo systemctl daemon-reload
+    sudo systemctl start geth
+    sudo systemctl start prysmbeacon
+    sudo systemctl start prysmvalidator
+    sudo systemctl start mevboost
 fi
 
 echo
 echo "Cleaning Up..."
-sudo rm -r geth-linux-amd64-${ver:1}-${sha:0:8}
-sudo rm geth-linux-amd64-${ver:1}-${sha:0:8}.tar.gz
+echo "--------------"
+rm -r geth-linux-$arch-${ver:1}-${sha:0:8}
+rm geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz
