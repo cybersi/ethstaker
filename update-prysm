@@ -13,13 +13,6 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 echo
-echo "Stopping Prysm services..."
-echo "--------------------------"
-sudo systemctl stop mevboost
-sudo systemctl stop prysmvalidator
-sudo systemctl stop prysmbeacon
-
-echo
 echo "Downloading Prysm: $ver"
 echo "-----------------------------"
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-amd64
@@ -43,6 +36,13 @@ if ! sha256sum --check "validator-$ver-linux-amd64.sha256"; then
     echo "File Mismatch!"
     exit 1
 fi
+
+echo
+echo "Stopping Prysm services..."
+echo "--------------------------"
+sudo systemctl stop mevboost
+sudo systemctl stop prysmvalidator
+sudo systemctl stop prysmbeacon
 
 echo
 echo "Moving binaries to /usr/local/bin"
