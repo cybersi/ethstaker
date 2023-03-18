@@ -77,3 +77,4 @@ echo "Cleaning Up..."
 echo "--------------"
 rm -r geth-linux-$arch-${ver:1}-${sha:0:8}
 rm geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz
+rm geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz.asc
