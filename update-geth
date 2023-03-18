@@ -53,5 +53,5 @@ fi
 
 echo
 echo "Cleaning Up..."
-rm -r geth-linux-amd64-${ver:1}-${sha:0:8}
-rm geth-linux-amd64-${ver:1}-${sha:0:8}.tar.gz
+sudo rm -r geth-linux-amd64-${ver:1}-${sha:0:8}
+sudo rm geth-linux-amd64-${ver:1}-${sha:0:8}.tar.gz
