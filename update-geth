@@ -61,6 +61,7 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
     echo "Starting Services..."
+    echo "--------------------"
     sudo systemctl daemon-reload
     sudo systemctl start geth
     sudo systemctl start prysmbeacon
