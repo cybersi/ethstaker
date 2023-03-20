@@ -1,6 +1,6 @@
 #!/bin/bash
 
-arch="arm64"
+arch="amd64"
 lastver=$(curl --silent "https://api.github.com/repos/nethermindeth/nethermind/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
 
 read -p "Update Nethermind to Version [$lastver]: " ver
