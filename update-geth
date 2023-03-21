@@ -50,7 +50,7 @@ tar xvf geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz
 sudo cp ./geth-linux-$arch-${ver:1}-${sha:0:8}/geth /usr/local/bin
 
 echo
-read -p "Restart Services?" -n 1 -r
+read -p "Restart Geth Service?" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
