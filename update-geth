@@ -1,4 +1,5 @@
 #!/bin/bash
+
 arch="amd64"
 lastver=$(curl --silent "https://api.github.com/repos/ethereum/go-ethereum/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
 
