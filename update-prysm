@@ -41,7 +41,6 @@ fi
 echo
 echo "Stopping Prysm services..."
 echo "--------------------------"
-sudo systemctl stop mevboost
 sudo systemctl stop prysmvalidator
 sudo systemctl stop prysmbeacon
 
@@ -65,7 +64,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo systemctl daemon-reload
     sudo systemctl start prysmbeacon
     sudo systemctl start prysmvalidator
-    sudo systemctl start mevboost
 fi
 
 echo "Cleaning up..."
