@@ -45,8 +45,6 @@ sudo systemctl stop mevboost
 sudo systemctl stop prysmvalidator
 sudo systemctl stop prysmbeacon
 
-sleep 5
-
 echo
 echo "Moving binaries to /usr/local/bin"
 echo "---------------------------------"
