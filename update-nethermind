@@ -1,6 +1,16 @@
 #!/bin/bash
 
-arch="amd64"
+__arch=$(uname -m)
+
+if [ "${__arch}" = "aarch64" ] || [ "${__arch}" = "arm64" ]; then
+    arch="arm64"
+elif [ "${__arch}" = "x86_64" ]; then
+    arch="amd64"
+else
+    echo "Architecture ${__arch} not recognized. Aborting."
+    exit 1
+fi
+
 lastver=$(curl --silent "https://api.github.com/repos/nethermindeth/nethermind/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
 
 read -p "Update Nethermind to Version [$lastver]: " ver
