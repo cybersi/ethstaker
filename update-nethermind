@@ -40,13 +40,6 @@ echo
 echo "Signature OK!"
 
 echo
-echo "Stopping Prysm Services..."
-echo "--------------------------"
-sudo systemctl stop mevboost
-sudo systemctl stop prysmvalidator
-sudo systemctl stop prysmbeacon
-
-echo
 echo "Stopping Nethermind Service..."
 echo "------------------------"
 sudo systemctl stop nethermind
@@ -59,7 +52,7 @@ sudo rm -r /usr/local/bin/nethermind
 sudo cp -a nethermind /usr/local/bin/nethermind
 
 echo
-read -p "Restart Services?" -n 1 -r
+read -p "Restart Nethermind Service?" -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
@@ -67,9 +60,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "--------------------"
     sudo systemctl daemon-reload
     sudo systemctl start nethermind
-    sudo systemctl start prysmbeacon
-    sudo systemctl start prysmvalidator
-    sudo systemctl start mevboost
 fi
 
 echo
