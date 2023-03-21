@@ -39,13 +39,6 @@ echo
 echo "Signature OK!"
 
 echo
-echo "Stopping Prysm Services..."
-echo "--------------------------"
-sudo systemctl stop mevboost
-sudo systemctl stop prysmvalidator
-sudo systemctl stop prysmbeacon
-
-echo
 echo "Stopping Geth Service..."
 echo "------------------------"
 sudo systemctl stop geth
@@ -65,9 +58,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "--------------------"
     sudo systemctl daemon-reload
     sudo systemctl start geth
-    sudo systemctl start prysmbeacon
-    sudo systemctl start prysmvalidator
-    sudo systemctl start mevboost
 fi
 
 echo
