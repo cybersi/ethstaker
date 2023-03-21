@@ -48,7 +48,7 @@ echo
 echo "Extracting..."
 echo "-------------"
 unzip nethermind-$ver-${sha:0:8}-linux-$arch.zip -d nethermind
-sudo rm -r /usr/local/bin/nethermind
+sudo rm -r /usr/local/bin/nethermind 2> /dev/null
 sudo cp -a nethermind /usr/local/bin/nethermind
 
 echo
