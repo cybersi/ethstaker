@@ -2,7 +2,7 @@
 
 __arch=$(uname -m)
 
-if [ "${__arch}" = "aarch64" ] || [ "${__arch}" = "arm64" ]; then
+if [ "${__arch}" = "aarch64" ] ; then
     arch="arm64"
 elif [ "${__arch}" = "x86_64" ]; then
     arch="amd64"
