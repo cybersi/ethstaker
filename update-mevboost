@@ -4,7 +4,7 @@ echo "Stopping Mevboost Service..."
 sudo systemctl stop mevboost
 echo
 echo "Downloading and building Mevboost..."
-CGO_CFLAGS="-O -D__BLST_PORTABLE__" go install github.com/flashbots/mev-boost@latest
+go install github.com/flashbots/mev-boost@latest
 echo
 echo "Copying Mevboost binary to /usr/local/bin..."
 sudo cp ~/go/bin/mev-boost /usr/local/bin
