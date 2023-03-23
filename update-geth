@@ -28,17 +28,14 @@ fi
 
 echo
 echo "Downloading Geth Version: $ver"
-echo "----------------------------------"
 curl -LO "https://gethstore.blob.core.windows.net/builds/geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz"
 
 echo
 echo "Importing build server public keys..."
-echo "-------------------------------------"
 gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys F9585DE6 C2FF8BBF 9BA28146 7B9E2481 D2A67EAC
 
 echo
 echo "Checking File Signature..."
-echo "--------------------------"
 curl -LO "https://gethstore.blob.core.windows.net/builds/geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz.asc" --silent
 
 if ! gpg --verify geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz.asc; then
@@ -51,12 +48,10 @@ echo "Signature OK!"
 
 echo
 echo "Stopping Geth Service..."
-echo "------------------------"
 sudo systemctl stop geth
 
 echo
 echo "Extracting..."
-echo "-------------"
 tar xvf geth-linux-$arch-${ver:1}-${sha:0:8}.tar.gz
 sudo cp ./geth-linux-$arch-${ver:1}-${sha:0:8}/geth /usr/local/bin
 
