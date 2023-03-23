@@ -28,17 +28,15 @@ fi
 
 echo
 echo "Downloading Nethermind Version: $ver"
-echo "----------------------------------"
+echo
 curl -LO "https://nethdev.blob.core.windows.net/builds/nethermind-$ver-${sha:0:8}-linux-$arch.zip"
 
 echo
 echo "Importing build server public keys..."
-echo "-------------------------------------"
 gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 34E353C6 CB6DA407
 
 echo
 echo "Checking File Signature..."
-echo "--------------------------"
 curl -LO "https://nethdev.blob.core.windows.net/builds/nethermind-$ver-${sha:0:8}-linux-$arch.zip.asc" --silent
 
 if ! gpg --verify nethermind-$ver-${sha:0:8}-linux-$arch.zip.asc; then
@@ -51,12 +49,10 @@ echo "Signature OK!"
 
 echo
 echo "Stopping Nethermind Service..."
-echo "------------------------"
 sudo systemctl stop nethermind
 
 echo
 echo "Extracting..."
-echo "-------------"
 unzip nethermind-$ver-${sha:0:8}-linux-$arch.zip -d nethermind
 sudo rm -r /usr/local/bin/nethermind 2>/dev/null
 sudo cp -a nethermind /usr/local/bin/nethermind
@@ -67,14 +63,12 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
     echo "Starting Services..."
-    echo "--------------------"
     sudo systemctl daemon-reload
     sudo systemctl start nethermind
 fi
 
 echo
 echo "Cleaning Up..."
-echo "--------------"
 rm nethermind-$ver-${sha:0:8}-linux-$arch.zip
 rm nethermind-$ver-${sha:0:8}-linux-$arch.zip.asc
 rm -r nethermind
