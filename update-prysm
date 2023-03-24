@@ -23,20 +23,30 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
 fi
 
+if [ "$(lscpu | grep -o adx)" ]; then
+    echo
+    echo "ADX Instruction set supported. Downloading modern linux binary."
+    lx="modern-linux"
+else
+    echo
+    echo "ADX Instruction set not supported. Downloading classic linux binary."
+    lx="linux"
+fi
+
 echo
 echo "Downloading Prysm: $ver"
-echo "-------------------------"
-curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-$arch
+echo "-----------------------------"
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-$lx-$arch
 echo
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch
 
 echo
 echo "Checking File integrity..."
 echo "--------------------------"
-curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-linux-$arch.sha256 --silent
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-$lx-$arch.sha256 --silent
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch.sha256 --silent
 
-if ! sha256sum --check "beacon-chain-$ver-linux-$arch.sha256"; then
+if ! sha256sum --check "beacon-chain-$ver-$lx-$arch.sha256"; then
     echo
     echo "File Mismatch!"
     exit 1
@@ -51,13 +61,16 @@ fi
 echo
 echo "Stopping Prysm services..."
 echo "--------------------------"
+sudo systemctl stop mevboost
 sudo systemctl stop prysmvalidator
 sudo systemctl stop prysmbeacon
+
+sleep 5
 
 echo
 echo "Moving binaries to /usr/local/bin"
 echo "---------------------------------"
-mv beacon-chain-$ver-linux-$arch beacon-chain
+mv beacon-chain-$ver-$lx-$arch beacon-chain
 mv validator-$ver-linux-$arch validator
 sudo chmod +x beacon-chain
 sudo chmod +x validator
@@ -66,7 +79,6 @@ sudo cp validator /usr/local/bin
 
 read -p "Restart Prysm Services?" -n 1 -r
 echo
-
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
     echo "Starting Prysm services..."
@@ -74,11 +86,12 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo systemctl daemon-reload
     sudo systemctl start prysmbeacon
     sudo systemctl start prysmvalidator
+    sudo systemctl start mevboost
 fi
 
 echo "Cleaning up..."
 echo "--------------"
 rm beacon-chain
 rm validator
-rm beacon-chain-$ver-linux-$arch.sha256
+rm beacon-chain-$ver-$lx-$arch.sha256
 rm validator-$ver-linux-$arch.sha256
