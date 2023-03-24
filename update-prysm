@@ -35,14 +35,12 @@ fi
 
 echo
 echo "Downloading Prysm: $ver"
-echo "-----------------------------"
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-$lx-$arch
 echo
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch
 
 echo
 echo "Checking File integrity..."
-echo "--------------------------"
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-$lx-$arch.sha256 --silent
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch.sha256 --silent
 
@@ -60,16 +58,11 @@ fi
 
 echo
 echo "Stopping Prysm services..."
-echo "--------------------------"
-sudo systemctl stop mevboost
 sudo systemctl stop prysmvalidator
 sudo systemctl stop prysmbeacon
 
-sleep 5
-
 echo
 echo "Moving binaries to /usr/local/bin"
-echo "---------------------------------"
 mv beacon-chain-$ver-$lx-$arch beacon-chain
 mv validator-$ver-linux-$arch validator
 sudo chmod +x beacon-chain
@@ -82,15 +75,12 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
     echo "Starting Prysm services..."
-    echo "--------------------------"
     sudo systemctl daemon-reload
     sudo systemctl start prysmbeacon
     sudo systemctl start prysmvalidator
-    sudo systemctl start mevboost
 fi
 
 echo "Cleaning up..."
-echo "--------------"
 rm beacon-chain
 rm validator
 rm beacon-chain-$ver-$lx-$arch.sha256
