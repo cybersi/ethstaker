@@ -25,24 +25,26 @@ fi
 
 if [ "$(lscpu | grep -o adx)" ]; then
     echo
-    echo "ADX Instruction set supported. Downloading modern linux binary."
+    echo "ADX Instruction set supported. Downloading modern-linux binary."
     lx="modern-linux"
 else
     echo
-    echo "ADX Instruction set not supported. Downloading classic linux binary."
+    echo "ADX Instruction set not supported. Downloading linux binary."
     lx="linux"
 fi
 
 echo
 echo "Downloading Prysm: $ver"
+echo "-----------------------------"
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-$lx-$arch
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-$lx-$arch.sha256
 echo
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch
+curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch.sha256
 
 echo
 echo "Checking File integrity..."
-curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-$lx-$arch.sha256 --silent
-curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch.sha256 --silent
+echo "--------------------------"
 
 if ! sha256sum --check "beacon-chain-$ver-$lx-$arch.sha256"; then
     echo
@@ -58,11 +60,16 @@ fi
 
 echo
 echo "Stopping Prysm services..."
+echo "--------------------------"
+sudo systemctl stop mevboost
 sudo systemctl stop prysmvalidator
 sudo systemctl stop prysmbeacon
 
+sleep 5
+
 echo
 echo "Moving binaries to /usr/local/bin"
+echo "---------------------------------"
 mv beacon-chain-$ver-$lx-$arch beacon-chain
 mv validator-$ver-linux-$arch validator
 sudo chmod +x beacon-chain
@@ -75,12 +82,15 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
     echo "Starting Prysm services..."
+    echo "--------------------------"
     sudo systemctl daemon-reload
     sudo systemctl start prysmbeacon
     sudo systemctl start prysmvalidator
+    sudo systemctl start mevboost
 fi
 
 echo "Cleaning up..."
+echo "--------------"
 rm beacon-chain
 rm validator
 rm beacon-chain-$ver-$lx-$arch.sha256
