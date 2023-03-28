@@ -37,9 +37,11 @@ echo
 echo "Downloading Prysm: $ver"
 echo "-----------------------------"
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-$lx-$arch
+echo
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/beacon-chain-$ver-$lx-$arch.sha256
 echo
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch
+echo
 curl -LO https://github.com/prysmaticlabs/prysm/releases/download/$ver/validator-$ver-linux-$arch.sha256
 
 echo
