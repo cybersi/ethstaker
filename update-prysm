@@ -25,11 +25,11 @@ fi
 
 if [ "$(lscpu | grep -o adx)" ]; then
     echo
-    echo "ADX Instruction set supported. Downloading modern-linux binary."
+    echo "ADX Instruction set supported. Downloading modern linux binary."
     lx="modern-linux"
 else
     echo
-    echo "ADX Instruction set not supported. Downloading linux binary."
+    echo "ADX Instruction set not supported. Downloading classic linux binary."
     lx="linux"
 fi
 
@@ -61,7 +61,6 @@ fi
 echo
 echo "Stopping Prysm services..."
 echo "--------------------------"
-sudo systemctl stop mevboost
 sudo systemctl stop prysmvalidator
 sudo systemctl stop prysmbeacon
 
@@ -86,7 +85,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo systemctl daemon-reload
     sudo systemctl start prysmbeacon
     sudo systemctl start prysmvalidator
-    sudo systemctl start mevboost
 fi
 
 echo "Cleaning up..."
